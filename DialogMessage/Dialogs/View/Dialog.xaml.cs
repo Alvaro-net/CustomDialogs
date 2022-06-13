@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -23,6 +24,7 @@ namespace DialogMessage.Dialogs.View
         public Dialog()
         {
             InitializeComponent();
+            Application.Current.MainWindow.Effect = new BlurEffect();
         }
 
         public Dialog(DialogModel model)
@@ -35,24 +37,30 @@ namespace DialogMessage.Dialogs.View
                 Grid.SetFlowDirection(gridButtons, FlowDirection.RightToLeft);
             }
 
-            var teste = btnok;
-            var teste2 = btncancel;
-            var grid = gridButtons;
+            Application.Current.MainWindow.Effect = new BlurEffect();
+
+            if (!model.ShowTwoButtons)
+            {
+                btncancel.IsCancel = false;
+            }
         }
 
         private void btnclose_Click(object sender, RoutedEventArgs e)
         {
+            Application.Current.MainWindow.Effect = null;
             this.Close();
         }
 
         private void btnok_Click(object sender, RoutedEventArgs e)
         {
+            Application.Current.MainWindow.Effect = null;
             this.DialogResult = true;
             this.Close();
         }
 
         private void btncancel_Click(object sender, RoutedEventArgs e)
         {
+            Application.Current.MainWindow.Effect = null;
             this.DialogResult = false;
             this.Close();
         }
