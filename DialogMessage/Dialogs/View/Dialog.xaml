@@ -13,9 +13,39 @@
         Title="BaseDialog" Height="300" Width="700"  WindowStyle="None" Background="{x:Null}"
         WindowStartupLocation = "CenterScreen" AllowsTransparency="True"
         d:DataContext="{d:DesignInstance view:DialogModel, IsDesignTimeCreatable=False}">
+    <Window.Resources>
+        <Style TargetType="{x:Type Control}" x:Key="fontStyling">
+            <Setter Property="FontFamily" Value="Roboto" />
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="ButtonPattern" BasedOn="{StaticResource fontStyling}" >
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="2"/>
+                    <Setter Property="BorderThickness" Value="{Binding BorderThickness, RelativeSource ={RelativeSource AncestorType = {x:Type Button}}}"/>
+                    <Setter Property="BorderBrush" Value="{Binding BorderBrush, RelativeSource ={RelativeSource AncestorType = {x:Type Button}}}"/>
+                    <Setter Property="Background" Value="{Binding Background, RelativeSource ={RelativeSource AncestorType = {x:Type Button}}}"/>
+                </Style>
+            </Style.Resources>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <ControlTemplate TargetType="{x:Type Button}" x:Key="ButtonTemplateAlignmentAllCenter">
+            <!--Complemento para Estilo ButtonStyleDark, ButtonStyleDarkBloquear e ButtonStyleLight-->
+            <Border Background="{Binding Background, BindsDirectlyToSource=True, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                    BorderBrush="{Binding BorderBrush, BindsDirectlyToSource=True, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                    BorderThickness="{Binding BorderThickness, BindsDirectlyToSource=True, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
     <Border x:Name="bordershow" BorderBrush="{Binding Border}" BorderThickness="{Binding BorderThickness}" CornerRadius="{Binding CornerRadius}" Background="{Binding Background}" Height="200" Width="630" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Border.Effect>
-            <DropShadowEffect Color="{Binding BorderBrush.Color, ElementName=bordershow, Mode=OneWay}" ShadowDepth="1" BlurRadius="30"/>
+            <DropShadowEffect Color="{Binding BorderBrush.Color, ElementName=bordershow, Mode=OneWay}" ShadowDepth="0" BlurRadius="60" />
         </Border.Effect>
         <Grid >
             <Grid.RowDefinitions>
@@ -49,24 +79,20 @@
                         </Style>
                     </Label.Style>
                 </Label>
-                <Button x:Name="btnclose" Grid.Column="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{Binding Foreground}" IsCancel="True" Width="12" Height="12" VerticalAlignment="Center" HorizontalAlignment="Left" Click="btnclose_Click">
+                <Button x:Name="btnclose" Grid.Column="1"
+                        Width="12" Height="12" VerticalAlignment="Center" HorizontalAlignment="Left" Click="btnclose_Click" FontSize="9">
                     <Button.Content>
                         <Path x:Name="pathclose" Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" 
                               Stretch="UniformToFill"    StrokeLineJoin="Round" 
-                              Fill="{Binding Foreground, BindsDirectlyToSource=True, ElementName=btnclose, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
+                              Fill="{Binding Foreground, ElementName=btnclose, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </Button.Content>
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border Background="Transparent">
-                                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonPattern}">
+                            <Setter Property="Foreground" Value="{Binding Foreground}"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="OverridesDefaultStyle" Value="True"/>
+                            <Setter Property="Template" Value="{StaticResource ButtonTemplateAlignmentAllCenter}"/>
                             <Style.Triggers >
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Foreground" Value="Red"/>
@@ -97,7 +123,7 @@
 
                     <ColumnDefinition x:Name="Text" Width="0.9*"/>
                 </Grid.ColumnDefinitions>
-                <Path x:Name="pathicon" Fill="{Binding Foreground}" Data="{Binding Icon}" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Path x:Name="pathicon" Fill="{Binding Foreground}" Data="{Binding Icon}" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,10">
                     <Path.Style>
                         <Style TargetType="{x:Type Path}">
                             <Style.Triggers>
@@ -111,7 +137,7 @@
                         </Style>
                     </Path.Style>
                 </Path>
-                <Label x:Name="lbltext" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" Foreground="{Binding Foreground}" Content="{Binding Text}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label x:Name="lbltext" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" Foreground="{Binding Foreground}" Content="{Binding Text}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
                             <Style.Triggers>
@@ -125,10 +151,9 @@
             </Grid>
             <Grid x:Name="gridButtons" Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <Colapsible:CollapsibleColumn x:Name="columnok" />
                     <Colapsible:CollapsibleColumn x:Name="columncancel">
                         <Colapsible:CollapsibleColumn.Style>
-                            <Style TargetType="{x:Type Colapsible:CollapsibleColumn}">
+                            <Style TargetType="{x:Type Colapsible:CollapsibleColumn}" >
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ShowTwoButtons}" Value="False">
                                         <Setter Property="Collapsed" Value="True"/>
@@ -137,34 +162,65 @@
                             </Style>
                         </Colapsible:CollapsibleColumn.Style>
                     </Colapsible:CollapsibleColumn>
+                    <Colapsible:CollapsibleColumn x:Name="columnok" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btncancel" MaxWidth="300" MinWidth="100" 
-                        HorizontalAlignment="Center" VerticalAlignment="Center" 
-                        Height="32" Grid.Column="0" IsCancel="True" Background="{Binding CancelBackground}" 
-                        BorderBrush="{Binding CancelBorder}" Foreground="{Binding CancelForeground}" FontFamily="{Binding CancelFontFamily}" 
-                        BorderThickness="{Binding CancelBorderThickness}" Content="{Binding CancelText}" FontSize="{Binding FontSize}" Click="btncancel_Click">
+                <Button x:Name="btncancel" Grid.Column="0" Click="btncancel_Click">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonPattern}">
+                            <Setter Property="MaxWidth" Value="300"/>
+                            <Setter Property="MinWidth" Value="100"/>
+                            <Setter Property="IsCancel" Value="True"/>
+                            <Setter Property="Content" Value="{Binding CancelText}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="Background" Value="{Binding CancelBackground}"/>
+                            <Setter Property="BorderBrush" Value="{Binding CancelBorder}"/>
+                            <Setter Property="Foreground" Value="{Binding CancelForeground}"/>
+                            <Setter Property="FontFamily" Value="{Binding CancelFontFamily}"/>
+                            <Setter Property="BorderThickness" Value="{Binding CancelBorderThickness}"/>
+                            <Setter Property="FontSize" Value="{Binding FontSize}"/>
+                            <Setter Property="OverridesDefaultStyle" Value="True"/>
+                            <Setter Property="Template" Value="{StaticResource ButtonTemplateAlignmentAllCenter}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowInverted}" Value="True">
                                     <Setter Property="FlowDirection" Value="LeftToRight"/>
                                 </DataTrigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{Binding ClieckedButtonBackround}"/>
+                                    <Setter Property="BorderBrush" Value="{Binding ClieckedButtonBorder}"/>
+                                    <Setter Property="BorderThickness" Value="{Binding ClieckedButtonBorderThickness}"/>
+                                </Trigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
                 </Button>
 
-                <Button x:Name="btnok" MaxWidth="300" MinWidth="100" 
-                        HorizontalAlignment="Center" VerticalAlignment="Center" 
-                        Height="32" Grid.Column="1" IsDefault="True" Background="{Binding OKBackground}" 
-                        BorderBrush="{Binding OKBorder}" Foreground="{Binding OKForeground}" FontFamily="{Binding OKFontFamily}" 
-                        BorderThickness="{Binding OKBorderThickness}" Content="{Binding OKText}" FontSize="{Binding FontSize}" Click="btnok_Click">
+                <Button x:Name="btnok" Grid.Column="1" Click="btnok_Click">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonPattern}">
+                            <Setter Property="MaxWidth" Value="300"/>
+                            <Setter Property="MinWidth" Value="100"/>
+                            <Setter Property="IsDefault" Value="True"/>
+                            <Setter Property="Content" Value="{Binding OKText}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="Background" Value="{Binding OKBackground}"/>
+                            <Setter Property="BorderBrush" Value="{Binding OKBorder}"/>
+                            <Setter Property="Foreground" Value="{Binding OKForeground}"/>
+                            <Setter Property="FontFamily" Value="{Binding OKFontFamily}"/>
+                            <Setter Property="BorderThickness" Value="{Binding OKBorderThickness}"/>
+                            <Setter Property="FontSize" Value="{Binding FontSize}"/>
+                            <Setter Property="OverridesDefaultStyle" Value="True"/>
+                            <Setter Property="Template" Value="{StaticResource ButtonTemplateAlignmentAllCenter}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowInverted}" Value="True">
                                     <Setter Property="FlowDirection" Value="LeftToRight"/>
                                 </DataTrigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{Binding ClieckedButtonBackround}"/>
+                                    <Setter Property="BorderBrush" Value="{Binding ClieckedButtonBorder}"/>
+                                    <Setter Property="BorderThickness" Value="{Binding ClieckedButtonBorderThickness}"/>
+                                </Trigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
@@ -173,4 +229,5 @@
             </Grid>
         </Grid>
     </Border>
+
 </Window>
